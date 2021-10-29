@@ -1,1 +1,64 @@
-编译器大致分为 1：解析 将源代码转化为抽象的形式  2 ：
+编译器大致分为 1：解析 将源代码转化为抽象的形式  2  ：转化 接受产生的抽象形式，操作这些抽象形式让编译器做想做的事情。 3：代码生成：基于转化后的代码表现形式生成目标代码。
+
+1：解析： 分为词法分析和语法分析 。
+
+词法分析：用tokenizer(词素生成器 lexer) 的工具将源代码分解为词素。
+词素：描述编程语言语法的对象，可以描述数字，标识符，标点符号，运算符等。
+
+语法分析：接受词素将他们组合成一个描述源代码各部分之间关系的中间表达形式，抽象语法树（AST)。
+AST:深度嵌套的对象，一种简单操作又提供源代码信息的形式展现代码。
+
+实例： （add 2 (subtract 4 2)) 
+词素如下：
+[
+{type:'paren', value:'('   },
+{type:'name', value:'add' },
+{type:'number',value:'2' },
+{type:'paren',value:'(' },
+{type:'name'.value:'subtract'},
+{type:'number',value:'4' },
+{type:'number',value:'2' },
+{type:'paren',value:')' },
+{type:'paren',value:')' },
+]
+
+产生的抽象语法树如下：
+{
+ type:'Program',
+ body:[{
+  type:'CallExpression',
+  name:'add',
+  params[{
+   type:'NumberLiteral',
+   value:'2',
+   },{
+   type:'CallExpression',
+   name:'subtract',
+   params:[{
+    type:'NumberLiteral',
+    value:'4',
+    },{
+    type:'NumberLiteral',
+    value:'2',
+    }]
+    }]
+    }]
+    }
+    
+    转换：解析生成的抽象语法树，并且做出改动。可以改变抽象语法树使代码保持在同一个语言，（Babel接收Js代码生成也是JS代码），或者编译成另外语言。
+    
+    如何转化一个AST: 含有type属性的元素，这些元素被称为抽象语法树的节点，每一个节点描述了源代码的一部分。
+    
+    针对NumberLiteral有一个节点：
+    {
+     type:'NumberLiteral',
+     value:'2',
+     }
+     
+     针对CallExpression有一个节点：
+     {
+      type:'CallExpression',
+      name:'subtract',
+    
+链接： https://github.com/YongzeYao/the-super-tiny-compiler-CN/blob/master/the-super-tiny-compiler.js
+
